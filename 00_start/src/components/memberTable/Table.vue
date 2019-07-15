@@ -38,7 +38,7 @@ export default Vue.extend({
 });
 </script>
 
-+ <style module>
+<style module>
 .table {
   border-collapse: collapse;
   width: 100%;
