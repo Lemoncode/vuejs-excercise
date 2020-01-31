@@ -37,4 +37,5 @@ Si quieres practicar más con VueJS, aquí tienes una lista de desafíos para a�
 
 - Añade la librería [vuetify](https://github.com/vuetifyjs/vuetify) y estila la aplicación (puedes mostrar los datos en una tabla o en cards...).
 - Añade paginación al listado (te hará falta actualizar el UI y el cliente de api rest).
+- Agrega un buscador a la tabla de forma que filtre entre los miembros.
 - Si pinchas en un miembro que navegue a su página de detalle en el que podrás ver lo detalles de ese usuario (tiene que buscar la API de github para leer esos datos).
