@@ -1,12 +1,14 @@
 <template>
   <tr>
-    <td :class="$style.column">
-      <img :src="member.avatar_url" :class="$style.image">
+    <td>
+      <v-avatar>
+        <img :src="member.avatar_url" />
+      </v-avatar>
     </td>
-    <td :class="$style.column">
+    <td>
       <span>{{member.id}}</span>
     </td>
-    <td :class="$style.column">
+    <td>
       <span>{{member.login}}</span>
     </td>
   </tr>
@@ -27,14 +29,3 @@ export default Vue.extend({
   } as Props
 });
 </script>
-
-<style module>
-.image {
-  max-width: 10rem;
-}
-
-.column {
-  width: 33.33%;
-  text-align: center;
-}
-</style>

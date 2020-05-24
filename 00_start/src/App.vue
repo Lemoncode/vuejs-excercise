@@ -1,5 +1,7 @@
 <template>
+  <v-app>
     <member-table />
+  </v-app>
 </template>
 
 <script lang="ts">

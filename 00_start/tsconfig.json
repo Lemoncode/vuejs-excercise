@@ -8,7 +8,10 @@
     "sourceMap": true,
     "noLib": false,
     "suppressImplicitAnyIndexErrors": true,
-    "strict": true
+    "strict": true,
+    "types": [
+      "vuetify"
+    ]
   },
   "compileOnSave": false
 }

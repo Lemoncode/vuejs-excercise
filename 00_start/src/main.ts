@@ -1,13 +1,10 @@
 import Vue from "vue";
-import Vuetify from 'vuetify/lib';
 import App from "./App.vue";
-import 'vuetify/dist/vuetify.min.css';
-
-Vue.use(Vuetify);
-
-//const vuetifyOpts = {};
+import vuetify from './plugins/vuetify'; 
+import '@mdi/font/css/materialdesignicons.css';
 
 new Vue({
   el: "#root",
+  vuetify,
   render: h => h(App)
 });
