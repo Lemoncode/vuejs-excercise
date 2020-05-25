@@ -1,17 +1,17 @@
 <template>
-  <tr>
-    <td>
+  <v-row>
+    <v-col>
       <v-avatar>
         <img :src="member.avatar_url" />
       </v-avatar>
-    </td>
-    <td>
+    </v-col>
+    <v-col>
       <span>{{member.id}}</span>
-    </td>
-    <td>
+    </v-col>
+    <v-col>
       <span>{{member.login}}</span>
-    </td>
-  </tr>
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">
@@ -29,3 +29,4 @@ export default Vue.extend({
   } as Props
 });
 </script>
+

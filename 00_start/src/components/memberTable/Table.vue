@@ -6,72 +6,87 @@
           <h2>Member Page {{organization}}</h2>
         </v-toolbar-title>
       </v-app-bar>
-      <v-row>
-        <v-col cols="12" sm="6" md="3">
-          <v-text-field
-            label="Organization"
-            placeholder="Search Organization"
-            append-icon="search"
-            :value="organization"
-            @input="onChange"
-            @click:append="() => loadMembersFirstPage(organization)"
-          ></v-text-field>
-        </v-col>
-      </v-row>
+      
+      <v-container fluid style="padding: 0">
+        <v-data-iterator
+          :items="members"
+          :items-per-page.sync="propsPagination.membersPerPage"
+          :page="propsPagination.page"
+          :server-items-length="propsPagination.membersInServer"
+          :search="search"
+          single-select
+          hide-default-footer
+          no-data-text=""
+        >
+          <template v-slot:header>
+            <v-toolbar dark color="primary">
+              <v-text-field
+                :value="organization"
+                clearable
+                flat
+                solo-inverted
+                hide-details
+                append-icon="search"
+                label="Search Organization"
+                @input="onChange"
+                @click:append="() => loadMembersFirstPage(organization)"
+              ></v-text-field>
+              <v-spacer></v-spacer>
+              <v-text-field
+                v-model="search"
+                clearable
+                flat
+                solo-inverted
+                hide-details
+                prepend-inner-icon="search"
+                label="Search members in this page"
+              ></v-text-field>
+            </v-toolbar>
+          </template>
 
-      <v-simple-table fixed-header>
-        <template v-slot:default>
-          <thead>
-            <member-head />
-          </thead>
-          <tbody>
-            <template v-for="member in members">
+          <template v-slot:default="props">
+            <template v-for="member in props.items">
               <member-row :key="member.id" :member="member" />
             </template>
-          </tbody>
-        </template>
-      </v-simple-table>
-      <div class="text-center">
-        <v-pagination 
-          v-model="propsPagination.page" 
-          :length="propsPagination.lastPage"
-          :total-visible="propsPagination.totalVisiblePages"
-          @input="() => loadMembersNextPage(organization,propsPagination.page)"
-        >
-        </v-pagination>
-      </div>
+          </template>
 
-      <div>
-        <span>Page: {{propsPagination.page}}</span>
-        <span>Last: {{propsPagination.lastPage}}</span>
-        <span>totalVisiblePages: {{propsPagination.totalVisiblePages}}</span>
-      </div>
-
+          <template v-slot:footer>
+            <v-pagination
+              v-model="propsPagination.page"
+              :length="propsPagination.lastPage"
+              :total-visible="propsPagination.totalVisiblePages"
+              @input="() => loadMembersNextPage(organization,propsPagination.page)"
+            ></v-pagination>
+          </template>
+        </v-data-iterator>
+      </v-container>
     </v-flex>
   </v-layout>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import MemberHead from "./Head.vue";
 import MemberRow from "./Row.vue";
 import { Member } from "../../model/member";
 import { getAllMembers, getAllMembersByPage } from "../../api/memberAPI";
 
 const DEFAULTPAGINATIONLENGHT = 10;
-const DEFAULTMEMBERSBYPAGE = 20
+const DEFAULTMEMBERSBYPAGE = 10;
 
 export default Vue.extend({
   name: "MemberTable",
-  components: { MemberHead, MemberRow },
+  components: { MemberRow },
   data: () => ({
     organization: "Lemoncode",
     propsPagination: {
       page: 1,
       totalVisiblePages: DEFAULTPAGINATIONLENGHT,
-      lastPage: 1
+      lastPage: 1,
+      membersPerPage: DEFAULTMEMBERSBYPAGE,
+      membersInServer: 0
     },
-    members: [] as Member[]
+    members: [] as Member[],
+    search: ""
   }),
   methods: {
     loadMembers: function() {
@@ -81,33 +96,33 @@ export default Vue.extend({
       });
     },
     loadMembersFirstPage: function(organization) {
-      getAllMembersByPage(organization, 1, DEFAULTMEMBERSBYPAGE).then(infoSearch => {
-        this.members = infoSearch.members;
-        this.configPagination(1, infoSearch.last);
-      });
-    },    
+      getAllMembersByPage(organization, 1, DEFAULTMEMBERSBYPAGE).then(
+        infoSearch => {
+          this.members = infoSearch.members;
+          this.configPagination(1, infoSearch.last);
+        }
+      );
+    },
     loadMembersNextPage: function(organization, page) {
-      getAllMembersByPage(organization, page, DEFAULTMEMBERSBYPAGE).then(infoSearch => {
-        this.members = infoSearch.members;
-      });
+      getAllMembersByPage(organization, page, DEFAULTMEMBERSBYPAGE).then(
+        infoSearch => {
+          this.members = infoSearch.members;
+        }
+      );
     },
     onChange(org) {
       this.organization = org;
     },
     configPagination: function(page, lastPage) {
       this.propsPagination.lastPage = Number.isInteger(lastPage) ? lastPage : 1;
+      this.propsPagination.membersInServer = lastPage * DEFAULTMEMBERSBYPAGE;
     }
   }
 });
 </script>
 
 <style module>
-.table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-.table tbody tr:nth-of-type(odd) {
-  background-color: rgba(0, 0, 0, 0.05);
+.v-text-field.v-text-field--solo .v-input__append-inner, .v-text-field.v-text-field--solo .v-input__prepend-inner {
+  cursor: pointer;
 }
 </style>
