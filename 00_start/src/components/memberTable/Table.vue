@@ -14,7 +14,7 @@
             append-icon="search"
             :value="organization"
             @input="onChange"
-            @click:append="() => loadMembers(organization)"
+            @click:append="() => loadMembersFirstPage(organization)"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -32,8 +32,21 @@
         </template>
       </v-simple-table>
       <div class="text-center">
-        <v-pagination v-model="page" :length="4" circle></v-pagination>
+        <v-pagination 
+          v-model="propsPagination.page" 
+          :length="propsPagination.lastPage"
+          :total-visible="propsPagination.totalVisiblePages"
+          @input="() => loadMembersNextPage(organization,propsPagination.page)"
+        >
+        </v-pagination>
       </div>
+
+      <div>
+        <span>Page: {{propsPagination.page}}</span>
+        <span>Last: {{propsPagination.lastPage}}</span>
+        <span>totalVisiblePages: {{propsPagination.totalVisiblePages}}</span>
+      </div>
+
     </v-flex>
   </v-layout>
 </template>
@@ -43,25 +56,46 @@ import Vue from "vue";
 import MemberHead from "./Head.vue";
 import MemberRow from "./Row.vue";
 import { Member } from "../../model/member";
-import { getAllMembers } from "../../api/memberAPI";
+import { getAllMembers, getAllMembersByPage } from "../../api/memberAPI";
+
+const DEFAULTPAGINATIONLENGHT = 10;
+const DEFAULTMEMBERSBYPAGE = 20
 
 export default Vue.extend({
   name: "MemberTable",
   components: { MemberHead, MemberRow },
   data: () => ({
     organization: "Lemoncode",
-    page: 1,
+    propsPagination: {
+      page: 1,
+      totalVisiblePages: DEFAULTPAGINATIONLENGHT,
+      lastPage: 1
+    },
     members: [] as Member[]
   }),
   methods: {
     loadMembers: function() {
       getAllMembers(this.organization).then(members => {
         this.members = members;
-        this.page = 1;
+        this.propsPagination.page = 1;
+      });
+    },
+    loadMembersFirstPage: function(organization) {
+      getAllMembersByPage(organization, 1, DEFAULTMEMBERSBYPAGE).then(infoSearch => {
+        this.members = infoSearch.members;
+        this.configPagination(1, infoSearch.last);
+      });
+    },    
+    loadMembersNextPage: function(organization, page) {
+      getAllMembersByPage(organization, page, DEFAULTMEMBERSBYPAGE).then(infoSearch => {
+        this.members = infoSearch.members;
       });
     },
     onChange(org) {
       this.organization = org;
+    },
+    configPagination: function(page, lastPage) {
+      this.propsPagination.lastPage = Number.isInteger(lastPage) ? lastPage : 1;
     }
   }
 });

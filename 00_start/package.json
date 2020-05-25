@@ -49,6 +49,7 @@
   },
   "dependencies": {
     "vue": "^2.5.17",
-    "vuetify": "^2.2.29"
+    "vuetify": "^2.2.29",
+    "parse-link-header": "^1.0.1"
   }
 }
