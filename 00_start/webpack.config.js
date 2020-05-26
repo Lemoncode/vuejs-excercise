@@ -18,7 +18,7 @@ module.exports = {
   mode: "development",
   entry: {
     app: "./main.ts",
-    vendor: ["vue"]
+    vendor: ["vue","vue-router"]
   },
   output: {
     path: path.join(basePath, "dist"),

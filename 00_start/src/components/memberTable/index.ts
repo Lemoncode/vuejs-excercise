@@ -1,3 +1,3 @@
-import MemberTable from "./Table.vue";
+import OrganizationPageContainer from "./OrganizationPageContainer.vue";
 
-export { MemberTable };
+export { OrganizationPageContainer };
