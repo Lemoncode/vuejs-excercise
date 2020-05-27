@@ -1,0 +1,36 @@
+import { MemberDetailEntityAPI } from "./memberDetail.api";
+import { MemberDetailEntity } from "./memberDetail.vm";
+
+export const mapMemberDetailEntityFromApiToVm = (memberDetailEntityAPI : MemberDetailEntityAPI) : MemberDetailEntity => ({
+  login: memberDetailEntityAPI.login,
+  id: memberDetailEntityAPI.id,
+  node_id: memberDetailEntityAPI.node_id,
+  avatar_url: memberDetailEntityAPI.avatar_url,
+  gravatar_id: memberDetailEntityAPI.gravatar_id,
+  url: memberDetailEntityAPI.url,
+  html_url: memberDetailEntityAPI.html_url,
+  followers_url: memberDetailEntityAPI.followers_url,
+  following_url: memberDetailEntityAPI.following_url,
+  gists_url: memberDetailEntityAPI.gists_url,
+  starred_url: memberDetailEntityAPI.starred_url,
+  subscriptions_url: memberDetailEntityAPI.subscriptions_url,
+  organizations_url: memberDetailEntityAPI.organizations_url,
+  repos_url: memberDetailEntityAPI.repos_url,
+  events_url: memberDetailEntityAPI.events_url,
+  received_events_url: memberDetailEntityAPI.received_events_url,
+  type: memberDetailEntityAPI.type,
+  site_admin: memberDetailEntityAPI.site_admin,
+  name: memberDetailEntityAPI.name,
+  company: memberDetailEntityAPI.company,
+  blog: memberDetailEntityAPI.blog,
+  location: memberDetailEntityAPI.location,
+  email: memberDetailEntityAPI.email,
+  hireable: memberDetailEntityAPI.hireable,
+  bio: memberDetailEntityAPI.bio,
+  public_repos: memberDetailEntityAPI.public_repos,
+  public_gists: memberDetailEntityAPI.public_gists,
+  followers: memberDetailEntityAPI.followers,
+  following: memberDetailEntityAPI.following,
+  created_at: '',
+  updated_at: ''
+});

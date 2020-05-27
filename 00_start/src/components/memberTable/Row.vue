@@ -11,7 +11,7 @@
     <v-col>
       <span>{{member.login}}</span>
     </v-col>
-    <v-btn flat icon :to="`member/${member.id}`">
+    <v-btn icon :to="`member/${member.login}`">
         <v-icon>edit</v-icon>
     </v-btn>
   </v-row>

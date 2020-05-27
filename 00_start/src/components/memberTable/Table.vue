@@ -1,9 +1,14 @@
 <template>
   <v-layout>
-    <v-flex xs10 sm10 offset-sm1>
+    <v-flex
+      xs12 
+      sm12 
+      md10 offset-md1 
+      xl8 offset-xl2
+    >
       <v-app-bar color="primary" dense dark>
         <v-toolbar-title>
-          <h2>Member Page {{organization}}</h2>
+          <h2>Members List Page of {{organization}}</h2>
         </v-toolbar-title>
       </v-app-bar>
       
