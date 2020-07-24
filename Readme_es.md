@@ -1,14 +1,12 @@
-# Intro
+# Laboratorio Vue.js 🚀
 
 El objetivo de este ejercicio es el que te familiarizes con VueJS.
 
-Tomaremos como punto de entrada una aplicación que muestra una lista de miembros que pertenecen a la organización Lemoncode de Github (esto está harcodeado).
+Deberás partir del repositorio en la carpeta `./00_start`. Este proyecto contiene el desarrollo de nuestro módulo de Vue.js.
 
-Añadiremos un _input_ que permite al usuario cambiar dicho nombre de grupo y elegir el que quiera, por ejemplo _quiero ver los miembros de la organización Microsoft_
+**Pasos para ejecutarlo**
 
-# Ejercicio
-
-- Arranca con el proyecto que se encuentra en la carpeta _00_start_.
+- Descarga el proyecto.
 
 - Instala las dependencias.
 
@@ -16,26 +14,74 @@ Añadiremos un _input_ que permite al usuario cambiar dicho nombre de grupo y el
 npm install
 ```
 
-- Arranca la aplicación y comprueba que funciona correctamente..
+- Arranca la aplicación y comprueba que funciona correctamente.
 
 ```bash
 npm start
 ```
+​
+# Ejercicios
 
-- La implementación actual muestra una lista de miembros que pertenecen a la organización _lemoncode_, ésta no esta mal, pero nos gustaría que el usuario pudiera teclear el nombre de la organización que quisiera, y al pulsar el botón pudiera ver la lista de miembros de la organización que hubiera tecleado (ejemplo de organizaciones válidas: microsoft, facebook)
+## Sistema de Validaciones
+​
+Implementa un sistema de validaciones para el formulario de edición de recetas, de forma que no permita guardar una receta si no están completos los campos necesarios:
+- Nombre de la receta.
+- Al menos un ingrediente en la receta.
+- Descripción de la receta.
+​
+## Mejora del Layout de la aplicación
+​
+Utiliza imágenes en servidores gratuitos de internet o almacénalas en local en el repositorio para mostrar una imagen de la receta.
+​
 
-- Pistas:
+Pistas:
+- Depende de la aproximación que quieras hacer, tal vez debas hacer uso de `require`. En las presentaciones había un ejemplo de cómo manejar imágenes mediante rutas dinámicas.
+​
+## Crea un componente Snackbar (Toast) y sustituye los mensajes de la aplicación
+​
+Vuetify tiene un componente [Snackbar](https://vuetifyjs.com/en/components/snackbars/#snackbars) que realiza esta función. Deberás sacarlo a común y utilizarlo cuando sea necesario.
+​
 
-  - Create una nueva entrada en el estado del componente `membersTable` y que por defecto valga _lemoncode_.
-  - Crea un input al lado del botón de carga. Este botón mostrará la organización actual elegida (estado creado en paso anterior).
-  - Enlaza el evento `onChange` para que detecte que cuando cambie, actualize el estado del campo organización.
-  - Cuando el usuario pulse en el botón de cargar, en vez de pasar el valor harcodeado _lemoncode_ que pase el valor del estado.
+Pistas:
+- Puedes hacerlo mediante la directiva `slot` o pasar las propiedades necesarias como `props`.
+​
+## Actualiza la lista de recetas
+​
+Puedes utilizar el componente `v-data-table` de [Vuetify](https://vuetifyjs.com/en/components/data-tables/).
+​
+# Desafíos para subir nota
+​
+## CRUD
+​
+Crea la funcionalidad necesaria para eliminar y crear nuevas recetas desde la lista de recetas.
+​
+## Componente Logout y rutas privadas
+​
+- Persiste el usuario en el `local storage`.
+- Muestra su nombre en la toolbar de la aplicación.
+- Crear un componente de Logout (servirá un botón Logout en la toolbar).
+- Configura el enrutador para que admita unas rutas públicas y privadas.
+- Actualiza el router de modo que solicite estar logueado para poder entrar a rutas distintas del `root` y `login`
+​
 
-# Para subir nota
+Pistas:
+- Una aproximación para realizar esto en el router:
+​
 
-Si quieres practicar más con VueJS, aquí tienes una lista de desafíos para añadir mejoras a esta aplicación:
-
-- Añade la librería [vuetify](https://github.com/vuetifyjs/vuetify) y estila la aplicación (puedes mostrar los datos en una tabla o en cards...).
-- Añade paginación al listado (te hará falta actualizar el UI y el cliente de api rest).
-- Agrega un buscador a la tabla de forma que filtre entre los miembros.
-- Si pinchas en un miembro que navegue a su página de detalle en el que podrás ver lo detalles de ese usuario (tiene que buscar la API de github para leer esos datos).
+_./src/router.ts_
+​
+```typescript
+···
+export const router = new Router({
+  routes,
+});
+​
+// beforeEach es una guarda de Vue-Router que SIEMPRE debe devolver la invocación de next
+router.beforeEach((to, from, next) => {
+  // 1. Definir rutas públicas
+  // 2. Definir rutas que necesitan autorización
+  // 3. Saber si el usuario está autenticado
+​
+  // 4. Retornar next("/login") si NO está autenticado o next() si SÍ está autenticado
+});
+```

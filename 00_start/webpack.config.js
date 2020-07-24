@@ -7,113 +7,118 @@ const VueLoaderPlugin = require("vue-loader/lib/plugin");
 
 const basePath = __dirname;
 
-module.exports = {
-  context: path.join(basePath, "src"),
-  resolve: {
-    extensions: [".js", ".ts", ".vue"],
-    alias: {
-      vue: "vue/dist/vue.esm.js"
-    }
-  },
-  mode: "development",
-  entry: {
-    app: "./main.ts",
-    vendor: ["vue"]
-  },
-  output: {
-    path: path.join(basePath, "dist"),
-    filename: "[name].js"
-  },
-  optimization: {
-    splitChunks: {
-      cacheGroups: {
-        vendor: {
-          test: /node_modules/,
-          name: "vendor",
-          chunks: "initial",
-          enforce: true
-        }
-      }
-    }
-  },
-  module: {
-    rules: [
-      {
-        test: /\.vue$/,
-        exclude: /node_modules/,
-        loader: "vue-loader"
+module.exports = (env, argv) => {
+  const isDev = argv.mode !== "production";
+  return {
+    context: path.join(basePath, "src"),
+    resolve: {
+      extensions: [".js", ".ts", ".vue"],
+      alias: {
+        vue: "vue/dist/vue.runtime.esm.js",
       },
-      {
-        test: /\.ts$/,
-        exclude: /node_modules/,
-        use: {
-          loader: "ts-loader",
-          options: {
-            appendTsSuffixTo: [/\.vue$/],
-            transpileOnly: true
-          }
-        }
-      },
-      {
-        test: /\.css$/,
-        oneOf: [
-          {
-            resourceQuery: /module/,
-            use: [
-              "vue-style-loader",
-              {
-                loader: "css-loader",
-                options: {
-                  modules: true,
-                  camelCase: true,
-                  localIdentName: "[name]__[local]__[hash:base64:5]"
-                }
-              }
-            ]
+    },
+    entry: {
+      app: "./main.ts",
+      vendor: ["vue", "vuetify", "vue-router", "@lemoncode/fonk"],
+      vendorStyles: ["../node_modules/vuetify/dist/vuetify.min.css"],
+    },
+    output: {
+      path: path.join(basePath, "dist"),
+      filename: "[name].js",
+    },
+    optimization: {
+      splitChunks: {
+        cacheGroups: {
+          vendor: {
+            test: /node_modules/,
+            name: "vendor",
+            chunks: "initial",
+            enforce: true,
           },
-          {
-            use: [
-              process.env.NODE_ENV !== "production"
-                ? "vue-style-loader"
-                : MiniCssExtractPlugin.loader,
-              "css-loader"
-            ]
-          }
-        ]
+        },
       },
-      {
-        test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
-        loader: "url-loader?limit=10000&mimetype=application/font-woff"
-      },
-      {
-        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        loader: "url-loader?limit=10000&mimetype=application/octet-stream"
-      },
-      {
-        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        loader: "file-loader"
-      },
-      {
-        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-        loader: "url-loader?limit=10000&mimetype=image/svg+xml"
-      }
-    ]
-  },
-  devtool: "inline-source-map",
-  plugins: [
-    new HtmlWebpackPlugin({
-      filename: "index.html",
-      template: "index.html",
-      hash: true
-    }),
-    new webpack.HashedModuleIdsPlugin(),
-    new MiniCssExtractPlugin({
-      filename: "[name].css"
-    }),
-    new ForkTsCheckerWebpackPlugin({
-      tsconfig: path.join(__dirname, "./tsconfig.json"),
-      vue: true
-    }),
-    new VueLoaderPlugin()
-  ]
+    },
+    module: {
+      rules: [
+        {
+          test: /\.vue$/, // va a pasar por los ficheros que terminan en .vue
+          exclude: /node_modules/, // no queremos que mire dentro de node_modules
+          loader: "vue-loader", //  usaremos el loader que hemos comentado
+        },
+        {
+          test: /\.ts$/,
+          use: {
+            loader: "ts-loader",
+            options: {
+              appendTsSuffixTo: [/\.vue$/],
+              // disable type checker - we will use it in fork plugin
+              transpileOnly: true,
+            },
+          },
+        },
+        {
+          test: /\.css$/,
+          oneOf: [
+            {
+              resourceQuery: /module/,
+              use: [
+                "vue-style-loader",
+                {
+                  loader: "css-loader",
+                  options: {
+                    localsConvention: "camelCase",
+                    modules: {
+                      mode: "local",
+                      localIdentName: "[name]__[local]__[hash:base64:5]",
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              use: [isDev ? "vue-style-loader" : MiniCssExtractPlugin.loader, "css-loader"],
+            },
+          ],
+        },
+        {
+          test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
+          loader: "url-loader?limit=10000&mimetype=application/font-woff",
+        },
+        {
+          test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+          loader: "url-loader?limit=10000&mimetype=application/octet-stream",
+        },
+        {
+          test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+          loader: "file-loader",
+        },
+        {
+          test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+          loader: "url-loader?limit=10000&mimetype=image/svg+xml",
+        },
+      ],
+    },
+    devtool: isDev ? "inline-source-map" : "none",
+    plugins: [
+      new VueLoaderPlugin(),
+      new HtmlWebpackPlugin({
+        filename: "index.html",
+        template: "index.html",
+        hash: true,
+      }),
+      new MiniCssExtractPlugin({
+        filename: "[name].css",
+      }),
+      new ForkTsCheckerWebpackPlugin({
+        typescript: {
+          configFile: path.join(basePath, "./tsconfig.json"),
+          vue: true,
+        },
+      }),
+      isDev &&
+        new webpack.DefinePlugin({
+          "process.env.NODE_ENV": JSON.stringify("development"),
+        }),
+    ].filter(Boolean),
+  };
 };
